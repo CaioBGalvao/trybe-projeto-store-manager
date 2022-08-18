@@ -10,11 +10,19 @@ const {
 } = process.env;
 
 const connection = mysql.createPool({
-  host: MYSQL_HOST || 'localhost',
-  user: MYSQL_USER || 'root',
-  port: MYSQL_PORT || 3306,
-  password: MYSQL_PASSWORD || 'password',
-  database: MYSQL_DATABASE || 'StoreManager',
+  host: MYSQL_HOST,
+  user: MYSQL_USER,
+  port: MYSQL_PORT,
+  password: MYSQL_PASSWORD,
+  database: MYSQL_DATABASE,
 });
 
 module.exports = connection;
+
+// const connection = mysql.createPool({
+//   host: MYSQL_HOST || 'localhost',
+//   user: MYSQL_USER || 'root',
+//   port: MYSQL_PORT || 3306,
+//   password: MYSQL_PASSWORD || 'password',
+//   database: MYSQL_DATABASE || 'StoreManager',
+// });

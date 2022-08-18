@@ -1,7 +1,18 @@
 const productsModel = require('../models/productsModel');
+const { validateName } = require('../Schema/nameSchema');
 
 const getAll = async () => productsModel.getAll();
 
 const getById = async (id) => productsModel.getById(id);
 
-module.exports = { getAll, getById };
+const create = async (name) => {
+  const check = validateName(name);
+  if (check.code) {
+    return check;
+  }
+
+  const response = await productsModel.create(name);
+  return response;
+};
+
+module.exports = { getAll, getById, create };
