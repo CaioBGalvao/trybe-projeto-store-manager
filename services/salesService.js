@@ -1,6 +1,6 @@
-const salesModel = require('../models/salesModel');
-const productsModel = require('../models/productsModel');
-const { validateSales } = require('../Schema/salesSchema');
+const { salesModel } = require('../models');
+const { productsModel } = require('../models');
+const { validateSales } = require('../Schema');
 
 const create = async (salesArray) => {
   const check = validateSales(salesArray);
