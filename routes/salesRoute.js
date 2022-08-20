@@ -4,6 +4,9 @@ const { salesController } = require('../controllers');
 
 const productsRoute = express.Router();
 
-productsRoute.post('/', salesController.create);
+productsRoute
+  .get('/', salesController.getAll)
+  .get('/:id', salesController.getById)
+  .post('/', salesController.create);
 
 module.exports = productsRoute;

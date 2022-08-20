@@ -1,5 +1,44 @@
-/* eslint-disable max-lines-per-function */
 const connection = require('./connection');
+
+const getAll = async () => {
+  const query = `SELECT 
+    SalesTable.date,
+    SalesProductTable.sale_id,
+    SalesProductTable.product_id,
+    SalesProductTable.quantity
+      FROM
+  StoreManager.sales AS SalesTable
+    INNER JOIN
+  StoreManager.sales_products AS SalesProductTable
+    ON SalesTable.id = SalesProductTable.sale_id
+    ORDER BY SalesTable.id, SalesProductTable.sale_id;`;
+
+  const [result] = await connection.execute(query);
+  // em caso de erro: retorna undefined por causa da desestruturação
+  return result;
+};
+
+const getById = async ({ id }) => {
+  const query = `SELECT 
+    SalesTable.date,
+    SalesProductTable.sale_id,
+    SalesProductTable.product_id,
+    SalesProductTable.quantity
+      FROM
+    sales AS SalesTable
+      INNER JOIN
+    sales_products AS SalesProductTable 
+      ON SalesTable.id = SalesProductTable.sale_id
+      WHERE SalesTable.id = ?
+      ORDER BY SalesTable.id, SalesProductTable.sale_id;`;
+
+  const [[result]] = await connection
+    .execute(
+      query, [id],
+    );
+  // em caso de erro: retorna undefined por causa da desestruturação
+  return result;
+};
 
 const createSales = async () => {
   const querySales = 'INSERT INTO sales () VALUES();';
@@ -21,7 +60,7 @@ const createsSalesProducts = async ({ saleId, salesArray }) => {
       .map((sale) => connection
         .execute(querySalesProduct, [saleId, sale.productId, sale.quantity])));
 
-  // caso de erro a função retorna o erro
+  // caso de erro em alguma promise retorna o erro
 
   // Promise.allSettled
 
@@ -33,15 +72,4 @@ const createsSalesProducts = async ({ saleId, salesArray }) => {
   return result;
 };
 
-module.exports = { createSales, createsSalesProducts };
-
-// Result sales
-// {
-// ResultSetHeader {
-//   fieldCount: 0,
-//   affectedRows: 1,
-//   insertId: 3,
-//   info: '',
-//   serverStatus: 2,
-//   warningStatus: 0
-// }
+module.exports = { getAll, getById, createSales, createsSalesProducts };

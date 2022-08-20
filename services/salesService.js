@@ -2,6 +2,10 @@ const { salesModel } = require('../models');
 const { productsModel } = require('../models');
 const { validateSales } = require('../Schema');
 
+const getAll = async () => salesModel.getAll();
+
+const getById = async (id) => salesModel.getById(id);
+
 const create = async (salesArray) => {
   const check = validateSales(salesArray);
   if (check.code) {
@@ -19,8 +23,8 @@ const create = async (salesArray) => {
   }
 
   const saleId = await salesModel.createSales();
-  const response = await salesModel.createsSalesProducts({ salesArray, saleId });
+  const response = await salesModel.createsSalesProducts({ saleId, salesArray });
   return response;
 };
 
-module.exports = { create };
+module.exports = { getAll, getById, create };

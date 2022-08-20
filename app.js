@@ -20,7 +20,7 @@ app.use((err, _req, res, _next) => {
     return res.status(500).json({ message: 'banco esta off' });
   }
   console.error('Erro desconhecido', err);
-  res.status(500).json({ message: 'Erro do middleware' });
+  res.status(500).json({ message: 'Erro do middleware', code: err.code });
 });
 
 // não remova essa exportação, é para o avaliador funcionar

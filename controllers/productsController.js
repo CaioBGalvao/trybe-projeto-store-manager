@@ -32,4 +32,27 @@ const create = async (req, res) => {
   return res.status(201).json(response);
 };
 
-module.exports = { getAll, getById, create };
+const update = async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+  const productIdObject = { id, name };
+  const response = await productsService.update(productIdObject);
+  if (!response) {
+    return res.status(404)
+      .json({ message: 'Product not found' });
+  }
+  return res.status(200).json(response);
+};
+
+const exclude = async (req, res) => {
+  const { id } = req.params;
+  const productIdObject = { id };
+  const response = await productsService.exclude(productIdObject);
+  if (!response) {
+    return res.status(404)
+      .json({ message: 'Product not found' });
+  }
+  return res.status(204);
+};
+
+module.exports = { getAll, getById, create, update, exclude };

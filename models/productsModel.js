@@ -4,7 +4,7 @@ const getAll = async () => {
   const query = 'SELECT * FROM products;';
 
   const [result] = await connection.execute(query);
-
+  // [[{result}]]
   return result;
 };
 
@@ -28,9 +28,43 @@ const create = async ({ name }) => {
     name,
   };
   return result;
- };
+};
+ 
+const update = async (updateObject) => {
+  const query = 'UPDATE products SET name = ? WHERE id = ?;';
 
-module.exports = { getAll, getById, create };
+  const { id, name } = updateObject;
+  const [result] = await connection.execute(query, [name, id]);
+
+  if (!result) {
+    return undefined;
+  }
+
+  const response = {
+    id,
+    name,
+  };
+
+  return response;
+};
+
+const exclude = async ({ id }) => {
+  const query = 'DELETE FROM products WHERE id = ?;';
+
+  const [result] = await connection.execute(query, [id]);
+
+  if (!result) {
+    return undefined;
+  }
+
+  const response = {
+    id,
+  };
+
+  return response;
+};
+
+module.exports = { getAll, getById, create, update, exclude };
 
 // [
 //   ResultSetHeader {

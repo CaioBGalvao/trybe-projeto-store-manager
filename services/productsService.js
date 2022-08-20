@@ -15,4 +15,23 @@ const create = async (name) => {
   return response;
 };
 
-module.exports = { getAll, getById, create };
+const update = async (updateObject) => {
+  const { id } = updateObject;
+  const result = await productsModel.getById({ id });
+  if (!result) {
+    return undefined;
+  }
+  const response = await productsModel.update(updateObject);
+  return response;
+};
+
+const exclude = async (id) => {
+  const result = await productsModel.getById(id);
+  if (!result) {
+    return undefined;
+  }
+  const response = await productsModel.exclude(id);
+  return response;
+ };
+
+module.exports = { getAll, getById, create, update, exclude };
