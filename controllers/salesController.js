@@ -11,7 +11,7 @@ const getAll = async (_req, res) => {
 
 const getById = async (req, res) => {
   const { id } = req.params;
-  const productIdObject = { id };
+  const productIdObject = Number(id);
   const response = await salesService.getById(productIdObject);
   if (!response) {
     return res.status(404)

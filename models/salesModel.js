@@ -1,47 +1,47 @@
 const connection = require('./connection');
 
-const getAll = async () => {
-  const query = `SELECT 
-    SalesTable.date,
-    SalesProductTable.sale_id,
-    SalesProductTable.product_id,
-    SalesProductTable.quantity
-      FROM
-  StoreManager.sales AS SalesTable
-    INNER JOIN
-  StoreManager.sales_products AS SalesProductTable
-    ON SalesTable.id = SalesProductTable.sale_id
-    ORDER BY SalesTable.id, SalesProductTable.sale_id;`;
+const queryGetAll = `SELECT 
+    Sales.date,
+    Product.sale_id AS saleId,
+    Product.product_id AS productId,
+    Product.quantity
+FROM
+    StoreManager.sales AS Sales
+        INNER JOIN
+    StoreManager.sales_products AS Product ON Sales.id = Product.sale_id;`;
 
-  const [result] = await connection.execute(query);
-  // em caso de erro: retorna undefined por causa da desestruturação
+const queryById = `SELECT 
+    Sales.date,
+    Product.product_id AS productId,
+    Product.quantity
+FROM
+    StoreManager.sales AS Sales
+        INNER JOIN
+    StoreManager.sales_products AS Product ON Sales.id = Product.sale_id
+WHERE
+    Sales.id = ?
+ORDER BY Product.sale_id ASC , Product.product_id ASC;`;
+
+const getAll = async () => {
+  const [result] = await connection.execute(queryGetAll);
   return result;
 };
 
-const getById = async ({ id }) => {
-  const query = `SELECT 
-    SalesTable.date,
-    SalesProductTable.sale_id,
-    SalesProductTable.product_id,
-    SalesProductTable.quantity
-      FROM
-    sales AS SalesTable
-      INNER JOIN
-    sales_products AS SalesProductTable 
-      ON SalesTable.id = SalesProductTable.sale_id
-      WHERE SalesTable.id = ?
-      ORDER BY SalesTable.id, SalesProductTable.sale_id;`;
-
-  const [[result]] = await connection
+const getById = async (id) => {
+  const [result] = await connection
     .execute(
-      query, [id],
+      queryById, [id],
     );
-  // em caso de erro: retorna undefined por causa da desestruturação
+
+  if (result.length === 0) {
+    return undefined;
+  }
+
   return result;
 };
 
 const createSales = async () => {
-  const querySales = 'INSERT INTO sales () VALUES();';
+  const querySales = 'INSERT INTO StoreManager.sales () VALUES();';
 
   const [resultSales] = await connection.execute(querySales);
 
@@ -51,7 +51,7 @@ const createSales = async () => {
 };
 
 const createsSalesProducts = async ({ saleId, salesArray }) => {
-  const querySalesProduct = `INSERT INTO sales_products
+  const querySalesProduct = `INSERT INTO StoreManager.sales_products
   (sale_id, product_id, quantity) 
   VALUES (?, ?, ?);`;
 
@@ -63,10 +63,9 @@ const createsSalesProducts = async ({ saleId, salesArray }) => {
   // caso de erro em alguma promise retorna o erro
 
   // Promise.allSettled
-
   const result = {
     id: saleId,
-    itemSold: salesArray,
+    itemsSold: salesArray,
   };
 
   return result;

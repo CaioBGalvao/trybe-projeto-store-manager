@@ -16,12 +16,21 @@ const create = async (name) => {
 };
 
 const update = async (updateObject) => {
-  const { id } = updateObject;
+  const { id, objName } = updateObject;
+
+  const check = validateName(objName);
+  if (check.code) {
+    return check;
+  }
+
+  const { name } = objName;
+
   const result = await productsModel.getById({ id });
   if (!result) {
     return undefined;
   }
-  const response = await productsModel.update(updateObject);
+
+  const response = await productsModel.update({ id, name });
   return response;
 };
 

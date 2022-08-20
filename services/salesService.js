@@ -4,7 +4,15 @@ const { validateSales } = require('../Schema');
 
 const getAll = async () => salesModel.getAll();
 
-const getById = async (id) => salesModel.getById(id);
+const getById = async (id) => {
+  const result = await salesModel.getById(id);
+
+  if (!result) {
+    return undefined;
+  }
+  
+  return result;
+};
 
 const create = async (salesArray) => {
   const check = validateSales(salesArray);

@@ -1,7 +1,7 @@
 const connection = require('./connection');
 
 const getAll = async () => {
-  const query = 'SELECT * FROM products;';
+  const query = 'SELECT * FROM StoreManager.products;';
 
   const [result] = await connection.execute(query);
   // [[{result}]]
@@ -9,7 +9,7 @@ const getAll = async () => {
 };
 
 const getById = async ({ id }) => {
-  const query = 'SELECT * FROM products WHERE id = ?;';
+  const query = 'SELECT * FROM StoreManager.products WHERE id = ?;';
 
   const [[result]] = await connection
     .execute(
@@ -20,21 +20,25 @@ const getById = async ({ id }) => {
 };
 
 const create = async ({ name }) => {
-  const query = 'INSERT INTO products (name) VALUES (?);';
+  const query = 'INSERT INTO StoreManager.products (name) VALUES (?);';
 
-  const dbResponse = await connection.execute(query, [name]);
+  const [dbResponse] = await connection.execute(query, [name]);
+
   const result = {
     id: dbResponse.insertId,
     name,
   };
+  
   return result;
 };
  
 const update = async (updateObject) => {
-  const query = 'UPDATE products SET name = ? WHERE id = ?;';
+  const query = 'UPDATE StoreManager.products SET name = ? WHERE id = ?;';
 
   const { id, name } = updateObject;
+
   const [result] = await connection.execute(query, [name, id]);
+  console.log('result do update', result);
 
   if (!result) {
     return undefined;
@@ -49,7 +53,7 @@ const update = async (updateObject) => {
 };
 
 const exclude = async ({ id }) => {
-  const query = 'DELETE FROM products WHERE id = ?;';
+  const query = 'DELETE FROM StoreManager.products WHERE id = ?;';
 
   const [result] = await connection.execute(query, [id]);
 
@@ -65,15 +69,3 @@ const exclude = async ({ id }) => {
 };
 
 module.exports = { getAll, getById, create, update, exclude };
-
-// [
-//   ResultSetHeader {
-//     fieldCount: 0,
-//     affectedRows: 1,
-//     insertId: 4,
-//     info: '',
-//     serverStatus: 2,
-//     warningStatus: 0
-//   },
-//   undefined
-// ]
